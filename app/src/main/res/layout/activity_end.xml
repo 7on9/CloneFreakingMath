@@ -24,6 +24,15 @@
         android:textColor="#FDBD41"
         android:textStyle="bold"
         android:textSize="30dp"/>
+    <TextView
+        android:id="@+id/txtHighScore"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="HS"
+        android:textColor="#FF5551"
+        android:textStyle="bold"
+        android:textSize="30dp"/>
     <ImageView
         android:layout_width="300dp"
         android:layout_height="300dp"

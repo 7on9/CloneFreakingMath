@@ -1,6 +1,8 @@
 package com.vnbamboo.clonefreakingmath;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -12,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class PlayActivity extends AppCompatActivity{
-    int number1, number2, res, point, progress;
+    int number1, number2, res, point, highScore;
     ProgressBar pbTimer;
     countDown countDownTimer;
 
@@ -28,15 +30,17 @@ public class PlayActivity extends AppCompatActivity{
     }
     public void openEndAvtivity(boolean isOverTime){
         countDownTimer.cancel();
+        updateScore();
         Intent intent = new Intent(this, EndActivity.class);
-        intent.putExtra("result", toString().valueOf(point-1));
+        intent.putExtra("result", toString().valueOf(point - 1));
+        intent.putExtra("highScore", toString().valueOf(highScore));
         if(isOverTime)
             intent.putExtra("status", "TIME OUT!");
         else intent.putExtra("status", "GAME OVER!");
         super.startActivity(intent);
     }
     public int randomNumber(int a, int b){
-        return ((int) ((Math.random() * 100 + a) % b));
+        return ((int) ((Math.random() * 100 + a) % b + 1));
     }
     public void play(){
         countDownTimer = new countDown(1500, 1);
@@ -48,7 +52,7 @@ public class PlayActivity extends AppCompatActivity{
         switch (randomNumber(1,2)){
             case 1: res = number1 + number2;
                 break;
-            default: res = randomNumber(1,20);
+            default: res = number1 + number2 + randomNumber(-2,2);
                 break;
         }
         TextView txtNumber1 = (TextView) findViewById(R.id.txtNumber1);
@@ -67,9 +71,10 @@ public class PlayActivity extends AppCompatActivity{
         btnWrong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
-                if(isCorrect()) openEndAvtivity(false);
-                else
-                {
+                if(isCorrect()) {
+                    openEndAvtivity(false);
+                }
+                else {
                     countDownTimer.cancel();
                     play();
                 }
@@ -82,7 +87,9 @@ public class PlayActivity extends AppCompatActivity{
                     countDownTimer.cancel();
                     play();
                 }
-                else openEndAvtivity(false);
+                else {
+                    openEndAvtivity(false);
+                }
             }
         });
 
@@ -103,6 +110,18 @@ public class PlayActivity extends AppCompatActivity{
         @Override
         public void onFinish() {
             openEndAvtivity(true);
+        }
+    }
+    private void updateScore(){
+        SharedPreferences prefs = getSharedPreferences("myHighScore", MODE_PRIVATE);
+        highScore = prefs.getInt("highScore", 0);
+
+        if(highScore < (point - 1)) {
+            highScore = point - 1;
+            SharedPreferences preferences = getSharedPreferences("myHighScore", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt("highScore", highScore);
+            editor.commit();
         }
     }
 }
