@@ -3,6 +3,7 @@ package com.vnbamboo.clonefreakingmath;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -71,6 +72,7 @@ public class PlayActivity extends AppCompatActivity{
         btnWrong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
+                soundOn();
                 if(isCorrect()) {
                     openEndAvtivity(false);
                 }
@@ -83,6 +85,7 @@ public class PlayActivity extends AppCompatActivity{
         btnCorrect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
+                soundOn();
                 if(isCorrect()) {
                     countDownTimer.cancel();
                     play();
@@ -124,4 +127,9 @@ public class PlayActivity extends AppCompatActivity{
             editor.commit();
         }
     }
+    public void soundOn(){
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.press);
+        mediaPlayer.start();
+    }
+
 }
